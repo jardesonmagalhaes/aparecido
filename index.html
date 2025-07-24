@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercearia PRO v4.0 - Responsivo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cor-primaria: #007bff; --cor-secundaria: #6c757d; --cor-sucesso: #28a745;
+            --cor-perigo: #dc3545; --cor-aviso: #ffc107; --cor-fundo: #f4f7f6;
+            --cor-superficie: #ffffff; --cor-texto: #343a40; --cor-borda: #dee2e6;
+            --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.08); --sombra-forte: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 15px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0; }
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { color: var(--cor-primaria); font-weight: 700; font-size: 1.8em; margin-bottom: 5px;}
+        .dashboard { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; }
+        .card-dashboard { background-color: var(--cor-superficie); padding: 15px; border-radius: 12px; box-shadow: var(--sombra-suave); border-left: 5px solid var(--cor-primaria); }
+        .card-dashboard h3 { margin: 0 0 8px; font-size: 0.9em; color: var(--cor-secundaria); }
+        .card-dashboard .valor { font-size: 1.8em; font-weight: 700; color: var(--cor-texto); }
+        .card-dashboard.perigo { border-left-color: var(--cor-perigo); }
+        .card-dashboard.sucesso { border-left-color: var(--cor-sucesso); }
+        .main-controls { background-color: var(--cor-superficie); padding: 20px; border-radius: 12px; box-shadow: var(--sombra-suave); margin-bottom: 25px; }
+        .form-cadastro { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 12px 15px; border: 1px solid var(--cor-borda); border-radius: 8px; font-size: 16px; font-family: 'Poppins', sans-serif; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500; transition: all 0.2s ease-in-out; white-space: nowrap; width: 100%; }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--sombra-forte); }
+        .btn-principal { background-color: var(--cor-primaria); color: white; }
+        .btn-sucesso { background-color: var(--cor-sucesso); color: white; }
+        .btn-perigo { background-color: var(--cor-perigo); color: white; }
+        .btn-aviso { background-color: var(--cor-aviso); color: black; }
+        .btn-secundario { background-color: var(--cor-secundaria); color: white; }
+        .filter-controls { display: flex; flex-direction: column; gap: 15px; }
+        #clients-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px; }
+        .client-item { background-color: var(--cor-superficie); border-radius: 12px; box-shadow: var(--sombra-suave); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .client-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .client-header h3 { margin: 0; font-size: 1.2em; word-break: break-all; padding-right: 10px; }
+        .client-divida { font-size: 1.1em; font-weight: 600; color: var(--cor-perigo); white-space: nowrap; }
+        .client-divida.pago { color: var(--cor-sucesso); }
+        .client-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-sm { padding: 8px 12px; font-size: 14px; gap: 5px; width: 100%; }
+        .icon { width: 1.2em; height: 1.2em; vertical-align: middle; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s ease; }
+        .modal-content { background-color: var(--cor-fundo); margin: 20px auto; padding: 20px; border-radius: 12px; width: 95%; max-width: 700px; box-shadow: var(--sombra-forte); position: relative; animation: slideIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-btn { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 32px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: var(--cor-perigo); }
+        .transaction-forms { display: flex; flex-direction: column; gap: 20px; border-bottom: 2px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; }
+        .form-section h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+        #lista-transacoes { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; }
+        .transacao-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 5px; border-bottom: 1px solid var(--cor-borda); gap: 10px; }
+        .transacao-item.compra .transacao-valor { color: var(--cor-perigo); font-weight: 600; }
+        .transacao-item.pagamento .transacao-valor { color: var(--cor-sucesso); font-weight: 600; }
+        .transacao-info { flex-grow: 1; }
+        .transacao-valor { white-space: nowrap; }
+        .transacao-actions { display: flex; }
+
+        /* --- Estilos para Telas Maiores (Tablets e Desktops) --- */
+        @media (min-width: 768px) {
+            body { padding: 40px; }
+            header h1 { font-size: 2.5em; }
+            .dashboard { grid-template-columns: repeat(3, 1fr); }
+            .main-controls { padding: 25px; }
+            .form-cadastro { flex-direction: row; }
+            .form-cadastro .btn { width: auto; }
+            .filter-controls { flex-direction: row; }
+            .filter-controls > * { flex-grow: 1; }
+            .filter-controls .btn { width: auto; flex-grow: 0; }
+            #clients-list { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); display: grid; }
+            .client-actions { grid-template-columns: 1fr 1fr; }
+            .modal-content { padding: 30px; margin: 5% auto; }
+            .transaction-forms { display: grid; grid-template-columns: 1fr 1fr; }
+            #lista-transacoes { max-height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="display: none;">
+        <symbol id="icon-add" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></symbol>
+        <symbol id="icon-delete" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></symbol>
+        <symbol id="icon-history" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52l.77-1.28l-3.52-2.09V8H12z"/></symbol>
+        <symbol id="icon-dollar" viewBox="0 0 24 24"><path fill="currentColor" d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15c0-1.09 1.01-1.85 2.7-1.85c1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61c0 2.31 1.91 3.46 4.7 4.13c2.5.6 3 1.48 3 2.41c0 .69-.49 1.75-2.7 1.75c-2.11 0-2.8-.93-2.93-2.15H6.3c.14 2.09 1.71 3.54 3.99 4.02V21h3v-2.14c2.17-.48 3.7-1.73 3.7-3.78c0-2.2-1.4-3.52-4.1-4.18z"/></symbol>
+        <symbol id="icon-upload" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16h6v-6h4l-8-8l-8 8h4v6zm-4 2h14v2H5v-2z"/></symbol>
+        <symbol id="icon-download" viewBox="0 0 24 24"><path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7l7-7z"/></symbol>
+    </svg>
+
+    <div class="container">
+        <header>
+            <h1>Mercearia PRO 4.0</h1>
+            <p>Sua gestão de fiados, agora perfeita no celular e no PC.</p>
+        </header>
+
+        <section class="dashboard" id="dashboard">
+            <div class="card-dashboard perigo"><h3>TOTAL A RECEBER</h3><div class="valor" id="total-divida">R$ 0,00</div></div>
+            <div class="card-dashboard"><h3>CLIENTES TOTAIS</h3><div class="valor" id="total-clientes">0</div></div>
+            <div class="card-dashboard sucesso"><h3>CLIENTES COM DÍVIDAS</h3><div class="valor" id="clientes-devedores">0</div></div>
+        </section>
+
+        <section class="main-controls">
+            <form id="form-add-client" class="form-cadastro">
+                <input type="text" id="client-name" placeholder="Cadastrar novo cliente" required>
+                <button type="submit" class="btn btn-principal"><svg class="icon"><use href="#icon-add"/></svg>Cadastrar</button>
+            </form>
+            <div class="filter-controls">
+                <input type="text" id="search-input" placeholder="Buscar cliente por nome...">
+                <select id="sort-select">
+                    <option value="name_asc">Ordenar por Nome (A-Z)</option>
+                    <option value="debt_desc">Ordenar por Maiores Dívidas</option>
+                </select>
+                <button id="btn-export" class="btn btn-secundario"><svg class="icon"><use href="#icon-download"/></svg>Exportar</button>
+                <button id="btn-import" class="btn btn-secundario"><svg class="icon"><use href="#icon-upload"/></svg>Importar</button>
+                <input type="file" id="import-file" style="display: none;" accept=".json">
+            </div>
+        </section>
+        
+        <main><ul id="clients-list"></ul></main>
+    </div>
+
+    <div id="modal-transacoes" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-close>&times;</span>
+            <h2 id="modal-client-name"></h2>
+            <div class="transaction-forms">
+                <div class="form-section">
+                    <h4><svg class="icon"><use href="#icon-add"/></svg> Nova Compra</h4>
+                    <form id="form-add-compra">
+                        <input type="text" id="product-name" placeholder="Produto" required style="margin-bottom: 10px;">
+                        <input type="number" id="product-price" placeholder="Preço" step="0.01" min="0.01" required style="margin-bottom: 10px;">
+                        <button type="submit" class="btn btn-principal btn-sm">Adicionar Compra</button>
+                    </form>
+                </div>
+                <div class="form-section">
+                    <h4><svg class="icon"><use href="#icon-dollar"/></svg> Registrar Pagamento</h4>
+                    <form id="form-add-pagamento">
+                        <input type="number" id="payment-amount" placeholder="Valor pago" step="0.01" min="0.01" required style="margin-bottom: 10px;">
+                        <button type="submit" class="btn btn-sucesso btn-sm">Registrar Pagamento</button>
+                    </form>
+                </div>
+            </div>
+            <h3>Histórico de Transações</h3>
+            <ul id="lista-transacoes"></ul>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Seletores de Elementos Globais
+        const clientsList = document.getElementById('clients-list');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const totalDividaEl = document.getElementById('total-divida');
+        const totalClientesEl = document.getElementById('total-clientes');
+        const clientesDevedoresEl = document.getElementById('clientes-devedores');
+        const modalTransacoes = document.getElementById('modal-transacoes');
+        const modalClientName = document.getElementById('modal-client-name');
+        const listaTransacoesUl = document.getElementById('lista-transacoes');
+        
+        // Estado da Aplicação
+        let clients = JSON.parse(localStorage.getItem('mercearia_pro_v4_clients')) || [];
+        let currentClientId = null;
+
+        // Funções de Dados e Lógica
+        const saveData = () => {
+            localStorage.setItem('mercearia_pro_v4_clients', JSON.stringify(clients));
+        };
+
+        const getClientDebt = (client) => {
+            if (!client || !client.transacoes) return 0;
+            return client.transacoes.reduce((acc, transacao) => acc + transacao.valor, 0);
+        };
+
+        // Funções de Renderização (UI)
+        const updateDashboard = () => {
+            const totalDivida = clients.reduce((acc, client) => acc + getClientDebt(client), 0);
+            const clientesComDivida = clients.filter(client => getClientDebt(client) > 0.001).length; // Usar tolerância para float
+            totalDividaEl.textContent = `R$ ${totalDivida.toFixed(2)}`;
+            totalClientesEl.textContent = clients.length;
+            clientesDevedoresEl.textContent = clientesComDivida;
+        };
+
+        const renderClients = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const sortValue = sortSelect.value;
+            
+            let filteredClients = clients.filter(c => c.nome.toLowerCase().includes(searchTerm));
+            filteredClients.forEach(client => client.totalDivida = getClientDebt(client));
+
+            if (sortValue === 'name_asc') filteredClients.sort((a, b) => a.nome.localeCompare(b.nome));
+            else if (sortValue === 'debt_desc') filteredClients.sort((a, b) => b.totalDivida - a.totalDivida);
+            
+            clientsList.innerHTML = filteredClients.length === 0 ? '<p style="grid-column: 1 / -1; text-align: center; color: var(--cor-secundaria);">Nenhum cliente encontrado.</p>' : '';
+            
+            filteredClients.forEach(client => {
+                const divida = client.totalDivida;
+                const dividaClass = divida > 0.001 ? 'client-divida' : 'client-divida pago';
+                const dividaText = divida > 0.001 ? `Dívida: R$ ${divida.toFixed(2)}` : 'Sem dívidas';
+                const li = document.createElement('li');
+                li.className = 'client-item';
+                li.dataset.id = client.id;
+                li.innerHTML = `
+                    <div class="client-header">
+                        <h3>${client.nome}</h3>
+                        <span class="${dividaClass}">${dividaText}</span>
+                    </div>
+                    <div class="client-actions">
+                        <button class="btn btn-principal btn-sm btn-view-history" title="Ver Histórico"><svg class="icon"><use href="#icon-history"/></svg>Histórico</button>
+                        <button class="btn btn-perigo btn-sm btn-delete-client" title="Excluir Cliente"><svg class="icon"><use href="#icon-delete"/></svg>Excluir</button>
+                    </div>`;
+                clientsList.appendChild(li);
+            });
+            updateDashboard();
+        };
+
+        const renderTransacoes = (clientId) => {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
+            
+            listaTransacoesUl.innerHTML = '';
+            const transacoesOrdenadas = [...client.transacoes].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            if (transacoesOrdenadas.length === 0) {
+                listaTransacoesUl.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--cor-secundaria);">Nenhuma transação registrada.</p>';
+                return;
+            }
+
+            transacoesOrdenadas.forEach(t => {
+                const li = document.createElement('li');
+                li.className = `transacao-item ${t.tipo}`;
+                li.dataset.id = t.id;
+                const valorAbs = Math.abs(t.valor);
+                const sinal = t.tipo === 'compra' ? '+' : '-';
+                li.innerHTML = `
+                    <div class="transacao-info">
+                        <span>${t.descricao}</span>
+                        <small style="display: block; color: #6c757d;">${new Date(t.data).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})}</small>
+                    </div>
+                    <div class="transacao-valor">
+                        ${sinal} R$ ${valorAbs.toFixed(2)}
+                    </div>
+                    <div class="transacao-actions">
+                        <button class="btn btn-perigo btn-sm btn-delete-transacao" style="width:auto; padding: 5px 8px;" title="Excluir Transação"><svg class="icon"><use href="#icon-delete"/></svg></button>
+                    </div>`;
+                listaTransacoesUl.appendChild(li);
+            });
+        };
+
+        // Lógica dos Modals
+        const openModal = (modal) => modal.style.display = 'block';
+        const closeModal = (modal) => modal.style.display = 'none';
+
+        // Event Listeners
+        document.getElementById('form-add-client').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('client-name');
+            const nome = input.value.trim();
+            if (nome) {
+                clients.unshift({ id: Date.now(), nome, transacoes: [] });
+                saveData();
+                renderClients();
+                input.value = '';
+            }
+        });
+
+        clientsList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const clientItem = e.target.closest('.client-item');
+            const clientId = Number(clientItem.dataset.id);
+
+            if (btn.classList.contains('btn-view-history')) {
+                currentClientId = clientId;
+                const client = clients.find(c => c.id === clientId);
+                modalClientName.textContent = `Histórico de ${client.nome}`;
+                renderTransacoes(clientId);
+                openModal(modalTransacoes);
+            }
+            if (btn.classList.contains('btn-delete-client')) {
+                if (confirm(`Tem certeza que deseja excluir "${clients.find(c=>c.id === clientId).nome}" e todo o seu histórico?`)) {
+                    clients = clients.filter(c => c.id !== clientId);
+                    saveData();
+                    renderClients();
+                }
+            }
+        });
+
+        modalTransacoes.addEventListener('click', (e) => {
+            if (e.target.dataset.close !== undefined || e.target === modalTransacoes) {
+                closeModal(modalTransacoes);
+            }
+        });
+        
+        document.getElementById('form-add-compra').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const produto = form.querySelector('#product-name').value.trim();
+            const preco = parseFloat(form.querySelector('#product-price').value);
+            if (produto && !isNaN(preco) && preco > 0 && currentClientId) {
+                const client = clients.find(c => c.id === currentClientId);
+                client.transacoes.push({ id: Date.now(), tipo: 'compra', descricao: produto, valor: preco, data: new Date().toISOString() });
+                saveData();
+                renderTransacoes(currentClientId);
+                renderClients();
+                form.reset();
+            }
+        });
+
+        document.getElementById('form-add-pagamento').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const valor = parseFloat(form.querySelector('#payment-amount').value);
+            if (!isNaN(valor) && valor > 0 && currentClientId) {
+                const client = clients.find(c => c.id === currentClientId);
+                client.transacoes.push({ id: Date.now(), tipo: 'pagamento', descricao: 'Pagamento Recebido', valor: -valor, data: new Date().toISOString() });
+                saveData();
+                renderTransacoes(currentClientId);
+                renderClients();
+                form.reset();
+            }
+        });
+
+        listaTransacoesUl.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-delete-transacao');
+            if (!btn || !currentClientId) return;
+            const transacaoId = Number(e.target.closest('.transacao-item').dataset.id);
+            if (confirm('Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita.')) {
+                const client = clients.find(c => c.id === currentClientId);
+                client.transacoes = client.transacoes.filter(t => t.id !== transacaoId);
+                saveData();
+                renderTransacoes(currentClientId);
+                renderClients();
+            }
+        });
+
+        // Event listeners para controles principais
+        searchInput.addEventListener('input', renderClients);
+        sortSelect.addEventListener('change', renderClients);
+        
+        // Lógica de Import/Export
+        const importFileInput = document.getElementById('import-file');
+        document.getElementById('btn-export').addEventListener('click', () => {
+            if (clients.length === 0) return alert("Não há dados para exportar.");
+            const dataStr = JSON.stringify(clients, null, 2);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([dataStr], {type: 'application/json'}));
+            link.download = `backup_mercearia_v4_${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+        document.getElementById('btn-import').addEventListener('click', () => importFileInput.click());
+        importFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if(!confirm("ATENÇÃO: Isso substituirá TODOS os dados atuais. Deseja continuar?")) {
+                importFileInput.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedClients = JSON.parse(event.target.result);
+                    if (Array.isArray(importedClients) && importedClients.every(c => 'nome' in c && 'transacoes' in c)) {
+                        clients = importedClients;
+                        saveData();
+                        renderClients();
+                        alert("Dados importados com sucesso!");
+                    } else { throw new Error("Arquivo não parece ser um backup válido."); }
+                } catch (err) { alert("Erro ao ler o arquivo: " + err.message); }
+                finally { importFileInput.value = ''; }
+            };
+            reader.readAsText(file);
+        });
+
+        // Renderização Inicial
+        renderClients();
+    });
+    </script>
+</body>
+</html>
